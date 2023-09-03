@@ -1,6 +1,7 @@
 package database
 
 import (
+	"GolangAPIAssessment/internal/model"
 	"fmt"
 	"log"
 	"os"
@@ -23,5 +24,18 @@ func Connect() {
 		log.Panic(err)
 	} else {
 		log.Println("Successfully connected to the database")
+	}
+
+	migrations()
+}
+
+func migrations() {
+	log.Println("Running Migrations")
+	err := Database.AutoMigrate(&model.Student{}, &model.Teacher{})
+
+	if err != nil {
+		log.Panic(err)
+	} else {
+		log.Println("Migrations completed")
 	}
 }

@@ -1,6 +1,8 @@
 package router
 
 import (
+	studentHandler "GolangAPIAssessment/internal/handler/student"
+	teacherHandler "GolangAPIAssessment/internal/handler/teacher"
 	"log"
 	"net/http"
 
@@ -31,18 +33,10 @@ func SetRoutes() {
 
 	protected := router.Group("/api/admin")
 
-	protected.GET("/student", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Get Students"})
-	})
-	protected.POST("/student", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Create new student"})
-	})
-	protected.GET("/teacher", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Get Teachers"})
-	})
-	protected.POST("/teacher", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Create new teacher"})
-	})
+	protected.GET("/student", studentHandler.GetStudents)
+	protected.POST("/student", studentHandler.CreateStudent)
+	protected.GET("/teacher", teacherHandler.GetTeachers)
+	protected.POST("/teacher", teacherHandler.CreateTeacher)
 
 	router.Run("0.0.0.0:8080")
 }
