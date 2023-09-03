@@ -15,19 +15,12 @@ func SetRoutes() {
 
 	public := router.Group("/api")
 
-	public.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Welcome to OneCV"})
-	})
-	public.GET("/register", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Register Students"})
-	})
 	public.GET("/commonstudents", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"message": "Common Students"})
 	})
-	public.GET("/suspend", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Suspend Students"})
-	})
-	public.GET("/retrievefornotifications", func(ctx *gin.Context) {
+	public.POST("/register", teacherHandler.RegisterStudents)
+	public.POST("/suspend", teacherHandler.SuspendStudent)
+	public.POST("/retrievefornotifications", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"message": "Register Students"})
 	})
 

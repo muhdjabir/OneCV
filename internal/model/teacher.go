@@ -12,3 +12,10 @@ type TeacherInput struct {
 }
 
 type TeacherResponse = []string
+
+type TeacherActions struct {
+	Teacher      string   `json:"teacher"`
+	Student      string   `json:"student"`
+	Students     []string `json:"students"`
+	Notification string   `json:"notification"`
+}

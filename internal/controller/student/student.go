@@ -3,6 +3,7 @@ package studentController
 import (
 	"GolangAPIAssessment/database"
 	"GolangAPIAssessment/internal/model"
+	"GolangAPIAssessment/internal/utils"
 )
 
 func GetStudents(query []string) (model.StudentResponse, error) {
@@ -21,7 +22,7 @@ func GetStudents(query []string) (model.StudentResponse, error) {
 
 func Create(student model.Student) (string, error) {
 	if err := database.Database.Create(&student).Error; err != nil {
-		return student.Email, err
+		return student.Email, utils.ErrInternalServerError
 	}
 	return student.Email, nil
 }

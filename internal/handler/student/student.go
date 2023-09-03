@@ -32,7 +32,7 @@ func PostStudent(ctx *gin.Context) {
 	}
 	newStudent, err := studentController.Create(student)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": utils.ErrInternalServerError.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 	ctx.JSON(http.StatusCreated, gin.H{"student": newStudent})
