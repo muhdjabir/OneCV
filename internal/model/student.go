@@ -12,3 +12,5 @@ type Student struct {
 type StudentInput struct {
 	Email string `json:"email" binding:"required"`
 }
+
+type StudentResponse = []string

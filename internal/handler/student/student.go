@@ -19,7 +19,7 @@ func GetStudents(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"students": students})
 }
 
-func CreateStudent(ctx *gin.Context) {
+func PostStudent(ctx *gin.Context) {
 	var input model.StudentInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": utils.ErrInvalidInputFormat.Error()})
@@ -35,5 +35,5 @@ func CreateStudent(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": utils.ErrInternalServerError.Error()})
 		return
 	}
-	ctx.JSON(http.StatusCreated, gin.H{"student": newStudent.Email})
+	ctx.JSON(http.StatusCreated, gin.H{"student": newStudent})
 }

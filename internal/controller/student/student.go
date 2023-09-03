@@ -5,19 +5,23 @@ import (
 	"GolangAPIAssessment/internal/model"
 )
 
-func GetStudents(query []string) ([]model.Student, error) {
+func GetStudents(query []string) (model.StudentResponse, error) {
 	var students []model.Student
+	var studentResponse model.StudentResponse
 	if len(query) != 0 {
 		database.Database.Where("email IN ?", query).Find(&students)
 	} else {
 		database.Database.Find(&students)
 	}
-	return students, nil
+	for _, student := range students {
+		studentResponse = append(studentResponse, student.Email)
+	}
+	return studentResponse, nil
 }
 
-func Create(student model.Student) (model.Student, error) {
+func Create(student model.Student) (string, error) {
 	if err := database.Database.Create(&student).Error; err != nil {
-		return student, err
+		return student.Email, err
 	}
-	return student, nil
+	return student.Email, nil
 }

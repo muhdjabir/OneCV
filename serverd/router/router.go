@@ -34,9 +34,9 @@ func SetRoutes() {
 	protected := router.Group("/api/admin")
 
 	protected.GET("/student", studentHandler.GetStudents)
-	protected.POST("/student", studentHandler.CreateStudent)
+	protected.POST("/student", studentHandler.PostStudent)
 	protected.GET("/teacher", teacherHandler.GetTeachers)
-	protected.POST("/teacher", teacherHandler.CreateTeacher)
+	protected.POST("/teacher", teacherHandler.PostTeacher)
 
 	router.Run("0.0.0.0:8080")
 }

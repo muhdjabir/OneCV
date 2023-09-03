@@ -1,6 +1,7 @@
 package teacherHandler
 
 import (
+	teacherController "GolangAPIAssessment/internal/controller/teacher"
 	"GolangAPIAssessment/internal/model"
 	"GolangAPIAssessment/internal/utils"
 	"net/http"
@@ -10,10 +11,15 @@ import (
 
 func GetTeachers(ctx *gin.Context) {
 	idparam := ctx.QueryArray("teacher")
-	ctx.JSON(http.StatusOK, gin.H{"message": idparam})
+	teachers, err := teacherController.GetTeachers(idparam)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": utils.ErrInternalServerError.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "Hello", "teachers": teachers})
 }
 
-func CreateTeacher(ctx *gin.Context) {
+func PostTeacher(ctx *gin.Context) {
 	var input model.TeacherInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": utils.ErrInvalidInputFormat.Error()})
@@ -23,5 +29,10 @@ func CreateTeacher(ctx *gin.Context) {
 	teacher := model.Teacher{
 		Email: input.Email,
 	}
-	ctx.JSON(http.StatusCreated, gin.H{"message": teacher})
+	newTeacher, err := teacherController.Create(teacher)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": utils.ErrInternalServerError.Error()})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{"teacher": newTeacher})
 }
