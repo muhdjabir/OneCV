@@ -43,6 +43,26 @@ func RegisterStudents(teacher string, students []string) error {
 	return nil
 }
 
+func GetCommonStudents(teachers []string) (model.StudentResponse, error) {
+	var commonStudents model.StudentResponse
+	err := database.Database.
+		Table("students").
+		Select("students.email").
+		Joins("INNER JOIN student_teachers ON students.id = student_teachers.student_id").
+		Joins("INNER JOIN teachers ON student_teachers.teacher_id = teachers.id").
+		Where("teachers.email IN ?", teachers).
+		Group("students.email").
+		Having("COUNT(DISTINCT teachers.email) = ?", len(teachers)).
+		Pluck("students.email", &commonStudents).
+		Error
+
+	if err != nil {
+		return nil, utils.ErrEntryNotFound
+	}
+
+	return commonStudents, nil
+}
+
 func SuspendStudent(student string) error {
 	var updatedStudent model.Student
 
@@ -53,4 +73,22 @@ func SuspendStudent(student string) error {
 	updatedStudent.Suspended = true
 	database.Database.Save(updatedStudent)
 	return nil
+}
+
+func RetrieveNotificationRecipients(teacher string, mentioned []string) (model.StudentResponse, error) {
+	var students model.StudentResponse
+	err := database.Database.
+		Table("students").
+		Select("DISTINCT students.email").
+		Joins("LEFT JOIN student_teachers ON students.id = student_teachers.student_id").
+		Where("students.suspended = false").
+		Where("student_teachers.teacher_email = ?", teacher).
+		Or("students.email IN ?", mentioned).
+		Pluck("students.email", &students).
+		Error
+
+	if err != nil {
+		return students, utils.ErrInternalServerError
+	}
+	return students, nil
 }

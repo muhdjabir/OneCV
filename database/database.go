@@ -26,12 +26,34 @@ func Connect() {
 		log.Println("Successfully connected to the database")
 	}
 
-	migrations()
+	migrations(Database)
 }
 
-func migrations() {
+func SetUpMockDatabase() {
+	var err error
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Singapore",
+		os.Getenv("TEST_DB_HOST"),
+		os.Getenv("TEST_DB_USER"),
+		os.Getenv("TEST_DB_PASSWORD"),
+		os.Getenv("TEST_DB_NAME"))
+	Database, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+	if err != nil {
+		log.Panic(err)
+	} else {
+		log.Println("Successfully connected to the database")
+	}
+
+	migrations(Database)
+}
+
+func TeardownMockDatabase() {
+	Database.Migrator().DropTable(&model.Student{}, &model.Teacher{})
+}
+
+func migrations(database *gorm.DB) {
 	log.Println("Running Migrations")
-	err := Database.AutoMigrate(&model.Student{}, &model.Teacher{})
+	err := database.AutoMigrate(&model.Student{}, &model.Teacher{})
 
 	if err != nil {
 		log.Panic(err)

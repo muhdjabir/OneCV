@@ -4,7 +4,6 @@ import (
 	studentHandler "GolangAPIAssessment/internal/handler/student"
 	teacherHandler "GolangAPIAssessment/internal/handler/teacher"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,14 +14,10 @@ func SetRoutes() {
 
 	public := router.Group("/api")
 
-	public.GET("/commonstudents", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Common Students"})
-	})
+	public.GET("/commonstudents", teacherHandler.GetCommonStudents)
 	public.POST("/register", teacherHandler.RegisterStudents)
 	public.POST("/suspend", teacherHandler.SuspendStudent)
-	public.POST("/retrievefornotifications", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Register Students"})
-	})
+	public.POST("/retrievefornotifications", teacherHandler.RetrieveNotificationRecipients)
 
 	protected := router.Group("/api/admin")
 
