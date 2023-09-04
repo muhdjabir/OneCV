@@ -11,6 +11,9 @@ func GetStudents(query []string) (model.StudentResponse, error) {
 	var studentResponse model.StudentResponse
 	if len(query) != 0 {
 		database.Database.Where("email IN ?", query).Find(&students)
+		if len(students) != len(query) {
+			return studentResponse, utils.ErrEntryNotFound
+		}
 	} else {
 		database.Database.Find(&students)
 	}

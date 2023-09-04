@@ -31,11 +31,7 @@ func Connect() {
 
 func SetUpMockDatabase() {
 	var err error
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Singapore",
-		os.Getenv("TEST_DB_HOST"),
-		os.Getenv("TEST_DB_USER"),
-		os.Getenv("TEST_DB_PASSWORD"),
-		os.Getenv("TEST_DB_NAME"))
+	dsn := "host=localhost user=postgres password=amir159874 dbname=testdb port=5432 sslmode=disable TimeZone=Asia/Singapore"
 	Database, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
