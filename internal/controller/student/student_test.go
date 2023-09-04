@@ -40,3 +40,21 @@ func TestGetStudents(t *testing.T) {
 
 	assert.Error(t, err)
 }
+
+func TestCreateStudent(t *testing.T) {
+	database.SetUpMockDatabase()
+	defer database.TeardownMockDatabase()
+
+	// Test case 1: Create user
+	student1 := model.Student{Email: "test1@gmail.com"}
+	result, err := Create(student1)
+
+	assert.NoError(t, err)
+	assert.Equal(t, "test1@gmail.com", result)
+
+	// Test case 2: Error duplicate email
+	student2 := model.Student{Email: "test1@gmail.com"}
+	_, err = Create(student2)
+
+	assert.Error(t, err)
+}

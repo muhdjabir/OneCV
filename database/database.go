@@ -44,7 +44,7 @@ func SetUpMockDatabase() {
 }
 
 func TeardownMockDatabase() {
-	Database.Migrator().DropTable(&model.Student{}, &model.Teacher{})
+	Database.Migrator().DropTable(&model.Student{}, &model.Teacher{}, "student_teachers")
 }
 
 func migrations(database *gorm.DB) {

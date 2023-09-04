@@ -12,7 +12,7 @@ func GetStudents(query []string) (model.StudentResponse, error) {
 	if len(query) != 0 {
 		database.Database.Where("email IN ?", query).Find(&students)
 		if len(students) != len(query) {
-			return studentResponse, utils.ErrEntryNotFound
+			return studentResponse, utils.ErrStudentNotFound
 		}
 	} else {
 		database.Database.Find(&students)
@@ -25,7 +25,7 @@ func GetStudents(query []string) (model.StudentResponse, error) {
 
 func Create(student model.Student) (string, error) {
 	if err := database.Database.Create(&student).Error; err != nil {
-		return student.Email, utils.ErrInternalServerError
+		return student.Email, utils.ErrDuplicateEntry
 	}
 	return student.Email, nil
 }

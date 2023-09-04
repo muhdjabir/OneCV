@@ -12,6 +12,9 @@ func GetTeachers(query []string) (model.TeacherResponse, error) {
 
 	if len(query) != 0 {
 		database.Database.Where("email IN ?", query).Find(&teachers)
+		if len(teachers) != len(query) {
+			return teacherResponse, utils.ErrTeacherNotFound
+		}
 	} else {
 		database.Database.Find(&teachers)
 	}
@@ -23,7 +26,7 @@ func GetTeachers(query []string) (model.TeacherResponse, error) {
 
 func Create(teacher model.Teacher) (string, error) {
 	if err := database.Database.Create(&teacher).Error; err != nil {
-		return teacher.Email, utils.ErrInternalServerError
+		return teacher.Email, utils.ErrDuplicateEntry
 	}
 	return teacher.Email, nil
 }
@@ -34,8 +37,11 @@ func RegisterStudents(teacher string, students []string) error {
 
 	database.Database.Where("email IN ?", students).Find(&studentList)
 	err := database.Database.Where("email = ?", teacher).First(&teacherRecord).Error
-	if err != nil || len(studentList) != len(students) {
-		return utils.ErrEntryNotFound
+	if err != nil {
+		return utils.ErrTeacherNotFound
+	}
+	if len(studentList) != len(students) {
+		return utils.ErrStudentNotFound
 	}
 	for _, student := range studentList {
 		database.Database.Model(&student).Association("Teachers").Append(&teacherRecord)
@@ -57,7 +63,7 @@ func GetCommonStudents(teachers []string) (model.StudentResponse, error) {
 		Error
 
 	if err != nil {
-		return nil, utils.ErrEntryNotFound
+		return nil, utils.ErrInternalServerError
 	}
 
 	return commonStudents, nil
@@ -68,7 +74,7 @@ func SuspendStudent(student string) error {
 
 	err := database.Database.Where("email = ?", student).First(&updatedStudent).Error
 	if err != nil {
-		return utils.ErrEntryNotFound
+		return utils.ErrStudentNotFound
 	}
 	updatedStudent.Suspended = true
 	database.Database.Save(updatedStudent)
