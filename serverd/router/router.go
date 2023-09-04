@@ -10,7 +10,6 @@ import (
 
 func SetRoutes() {
 	router := gin.Default()
-	log.Println("Server is listening at PORT:8080")
 
 	public := router.Group("/api")
 
@@ -27,4 +26,5 @@ func SetRoutes() {
 	protected.POST("/teacher", teacherHandler.PostTeacher)
 
 	router.Run("0.0.0.0:8080")
+	log.Println("Server is listening at PORT:8080")
 }
